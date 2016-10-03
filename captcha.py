@@ -99,7 +99,7 @@ def get_details_from_epic(epic, txtfile):
     # display.start()
     txtFile = txtfile
 
-    chromedriver = "/home/tavleen/chromedriver"
+    chromedriver = "../chromedriver"
     os.environ["webdriver.chrome.driver"] = chromedriver
     driver = webdriver.Chrome(chromedriver)
 
