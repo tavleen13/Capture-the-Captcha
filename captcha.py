@@ -53,6 +53,7 @@ def get_epic_from_txtFile(txtFile):
 def get_img(img):
 
     data = imread(img)
+    #Formula for Brightness index is dot product with RGB value divide by 1000
     data = sp.inner(data, [299, 587, 114]) / 1000.0
     return (data - data.mean()) / data.std()
 
