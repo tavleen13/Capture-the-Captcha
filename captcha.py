@@ -25,24 +25,18 @@ from selenium.common.exceptions import TimeoutException
 
 url = 'http://ceodelhi.gov.in/OnlineErms/electorsearchidcard.aspx'
 
-
+# ------ function to read EPIC ID stored in a text file ---
 def get_epic_from_txtFile(txtFile):
 
     epicNo = []
-
     pattern = '\s{0,1}[A-Z]{3}\d{7}|DL\/\d\d\/\d{3}\/\d{6}'
-
     with open(txtFile, 'r') as f:
         allData = f.readlines()
-
         for data in allData:
             if re.search(pattern, data):
-
                 if (' ' in data):
-
                     try:
                         data = data.split(' ')[1]
-
                     except IndexError:
                         continue
                 epicNo.append(data.strip('\n'))
@@ -69,21 +63,16 @@ def crop(infile, height, width):
     for col in range(2, imgwidth - 2):
         rgb = ''
         for row in range(2, imgheight - 2):
-
             r, g, b = im.getpixel((col, row))
-
             if (r, g, b) == (128, 128, 128):
                 rgb = rgb + "0"
-
             else:
                 rgb = rgb + "1"
                 first_black = col
                 flag = 0
                 break
-
         if flag == 0:
             break
-
     for i in range(imgheight // height):
         for j in range(first_black, imgwidth, width):
             if k > 3:
@@ -113,7 +102,7 @@ def get_details_from_epic(epic, txtfile):
     capcha_textBox = driver.find_element_by_id(
         'ctl00_ContentPlaceHolder1_TextBoxcaptacha')
 
-    # ----------- code to save screenshot and get capcha ----------------
+    # ----------- saving screenshot and fetching capcha ----------------
     capcha_img = driver.find_element_by_id('ctl00_ContentPlaceHolder1_myImage')
 
     driver.save_screenshot(os.path.join(tmp_path, 'screenshot.png'))
@@ -132,10 +121,8 @@ def get_details_from_epic(epic, txtfile):
     img.save(os.path.join(tmp_path, "img_crop.png"))
     capchaText = read_from_cropped_capcha(os.path.join(
         tmp_path, 'img_crop.png'), epic, driver, txtFile)
-    #--------------------------------------------------------------------
-
+    
     capcha_textBox.send_keys(capchaText)
-
     xpath = ".//input[@type='submit' and @value='Search']"
     driver.find_element_by_xpath(xpath).click()
 
@@ -175,11 +162,10 @@ def get_details_from_epic(epic, txtfile):
                          age, sex, houseNo, partNo, section])
     driver.quit()
 
-
+# --- function to read the Captcha from the cropped Capcha image ----
 def read_from_cropped_capcha(img, epic, driver, txtFile):
 
     img = Image.open(img)
-
     img.thumbnail((100, 100))
     img = img.convert('L')
     img = img.filter(ImageFilter.SHARPEN)
@@ -211,30 +197,21 @@ def read_from_cropped_capcha(img, epic, driver, txtFile):
         print 'Capcha read wrong'
         driver.quit()
         get_details_from_epic(epic, txtFile)
-
     return text
 
-# get_details_from_epic('ZIP1689123')
-#---------------------------------MAIN-----------------------------
-
+#---------------------------------MAIN file of execution-----------------------------
 cwd = os.getcwd()
 
 for directory in os.listdir(cwd):
     district = directory
-
     if os.path.isdir(os.path.join(cwd, directory)):
-
         if os.getcwd() != cwd:
             os.chdir(cwd + '/')
-
         os.chdir(directory + '/')
+
         for txtFile in glob.glob('*.txt'):
-
             list_of_epic = get_epic_from_txtFile(txtFile)
-            print txtFile
-
             with open(txtFile.strip('.txt') + '.csv', 'wb') as f:
-
                 writer = csv.writer(f)
                 headers = [
                     'EPICno',
