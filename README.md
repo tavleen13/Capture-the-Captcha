@@ -12,3 +12,4 @@ REQUIREMENTS
  3. Scipy
  4. Regex
  5. Tesseract
+ 6. PIL
